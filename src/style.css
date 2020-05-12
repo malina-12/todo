@@ -1,0 +1,318 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif, 'Arial';
+	font-size: 18px;
+	color: #000000;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.container {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	height: 100vh;
+	background: linear-gradient(to top left, #ffc97e, #e9a0ff);
+}
+
+.wrap {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100%;
+}
+
+.todo {
+	display: flex;
+	align-self: center;
+	flex-direction: column;
+	width: 300px;
+	height: 85vh;
+	border-radius: 21px;
+	background-color: #fff;
+}
+
+/* Header */
+
+ul {
+	list-style: none;
+	margin: 0;
+    padding: 0;
+}
+
+.todo__header {
+	display: flex;
+	align-items: flex-start;
+	width: 100%;
+	height: 100px;
+	border-radius: 20px 20px 0 0;
+	background-color: #d195f7db;
+}
+
+.todo__nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.nav__tab {
+	width: 10px;
+    height: 100%;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-around;
+    align-items: center;
+    box-sizing: content-box;
+    color: #ffffff;
+	transition: all .5s ease;
+}
+
+.active {
+	background-color: #cf83ffdb;
+}
+
+.todo__btn {
+	width: 100%;
+	height: 100%;
+	font-size: inherit;
+	color: #ffffff;
+	background-color: rgba(0,0,0,0);
+	border: none;
+	cursor: pointer;
+	user-select: none;
+}
+
+.todo__btn:focus {
+	outline: none;
+}
+
+.nav__tab:focus {
+	box-shadow: none;
+}
+
+.nav__tab:hover {
+	background-color: #d195f7db;
+	color: #ffffff;
+}
+
+.nav__tab:first-child {
+    border-top-left-radius: 20px;
+}
+
+.nav__tab:last-child {
+    border-top-right-radius: 20px;
+}
+
+/* Search */
+
+.search {
+	margin: 20px 5px;
+}
+
+.search__field {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.search__img {
+	opacity: 0.5;
+}
+
+.search__input {
+	width: 80%;
+	height: 30px;
+	font-size: 19px;
+	color: #4a4a4a;
+	border: none;
+	border-bottom: 2px solid #f1f1f1;
+}
+
+.search__input:focus {
+	outline: none;
+	border-bottom: 2px solid #ffc97e;
+}
+
+.search__btn {
+	margin-left: 11px;
+	height: 25px;
+	width: 25px;
+	cursor: pointer;
+}
+
+/* Main */
+
+.main {
+	display: flex;
+	flex-direction: column;
+	align-self: center;
+	width: 90%;
+	height: 80%;
+    margin: 10px 0 20px;
+	overflow: hidden;
+}
+
+.main__list {
+	height: 100%;
+}
+
+.main__item {
+	margin-bottom: 10px;
+}
+
+.main__message {
+	text-align: center; 
+}
+
+.delete {
+	cursor: pointer;
+}
+
+/* Pagination */
+
+.pages {
+	display: flex;
+	justify-content: space-between;
+	align-self: center;
+	width: 80%;
+	margin-bottom: 10px;
+}
+
+.pages span {  
+	width: 25px;
+	height: 25px;
+}
+
+.pages__current {
+	text-align: center;
+	line-height: 25px;
+	cursor: default;
+}
+
+.pages__img {
+	width: 25px;
+	height: 25px;
+	cursor: pointer;
+}
+
+/* Add button */
+
+.container__add {
+	align-self: center;
+	width: 50px;
+	height: 40px;
+	margin-top: -10px;
+	cursor: pointer;
+}
+
+
+/*Checkbox*/
+
+.main__checkbox {
+	display: block;
+	position: relative;
+	cursor: pointer;
+	margin-bottom: 0;
+}
+
+.main__checkbox input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+.checkmark {
+	position: absolute;
+	height: 25px;
+	width: 25px;
+	background-color: #f1f1f1;
+}
+
+.main__checkbox:hover input ~ .checkmark {
+	background-color: #e7bdff;
+}
+
+.main__checkbox input:checked ~ .checkmark {
+	background-color: #c17cd7;
+}
+
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+.main__checkbox input:checked ~ .checkmark:after {
+	display: block;
+}
+
+.main__checkbox .checkmark:after {
+	left: 9px;
+	top: 3px;
+	width: 5px;
+	height: 13px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	transform: rotate(45deg);
+}
+
+/*Input*/
+.main__item {
+	margin: 10px 0;
+}
+
+.main__input {
+	width: 75%;
+	height: 25px;
+	font-size: 19px;
+	color: #4a4a4a;
+	border: none;
+	border-bottom: 2px solid #f1f1f1;
+	margin-left: 35px;
+}
+
+.main__input:focus {
+	outline: none;
+	border-bottom: 2px solid #ffc97e;
+}
+
+/* Delete button */
+
+.delete {
+	display: block;
+	position: relative;
+	margin-left: auto;
+	height: 25px;
+	width: 25px;
+	margin-top: -25px;
+	background-color: #c5c5c5;
+}
+
+.delete::before {
+	content: '+';
+	position: absolute;
+	transform: rotate(45deg);
+	color: #ffffff;
+	font-size: 25px;
+	top: -3px;
+	left: 5px;
+}
+
+.delete:hover {
+	background-color: #fb9494;
+}
+
+.delete:active {
+	background-color: #ef4848;
+}
