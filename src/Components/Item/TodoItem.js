@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Checkbox } from './Checkbox';
-import { Input } from './Input';
-import { DeleteButton } from './DeleteButton';
 
 
 export class TodoItem extends Component {
@@ -9,23 +6,35 @@ export class TodoItem extends Component {
 		super(props);
 	};
 
+	/* componentDidMount(){
+		this.textInput.focus();
+	  } */
+
 
 	render() {
 		return (
 			<>
-				<Checkbox 
-					onCheckItem={this.props.onCheckItem}
-					checked={this.props.done}
-					id={this.props.id}
+				<label className="main__checkbox">
+					<input 
+						type="checkbox" 
+						onChange={ () => this.props.onCheckItem(this.props.item.id) } 
+						checked={ this.props.item.done } 
+						/>
+					<span className="checkmark"></span>
+				</label>
+
+				<input className="main__input"
+					type="text"
+					value={ this.props.item.value }
+					onChange={ this.props.onInputChange }
+					onBlur={ () => this.props.onInputBlur(this.props.item.id) }
+					//ref={ (input) => this.textInput = input }
 				/>
-				<Input 
-					onInputChange={this.props.onInputChange}
-					onInputBlur={this.props.onInputBlur}
-					value={this.props.value}
-				/>
-				<DeleteButton
-					onDeleteItem={this.props.onDeleteItem}
-				/>
+				
+				<span className="delete"
+					onClick={ () => this.props.onDeleteItem(this.props.item.id) }
+				>
+				</span>
 			</>
 		)
 	}

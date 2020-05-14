@@ -11,7 +11,7 @@ export class AddButton extends Component {
             <div className="container__add">
                 <a 
                     className="container__add-btn" 
-                    onClick={this.props.onAddItem} >
+                    onClick={ this.props.onAddItem } >
                         <svg width="50" height="50">
 						<circle cx="25" cy="25" r="25" fill="#f6a57d"></circle>
 						<line strokeWidth="2" x1="15" x2="35" y1="25" y2="25" stroke="#fff"></line>

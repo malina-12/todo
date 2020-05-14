@@ -7,24 +7,25 @@ export class TodoList extends Component {
 	}
 
 	render() {
-		const { items, onCheckItem, onDeleteItem, onInputBlur, onInputChange } = this.props;
+		const { items, inputValue , onCheckItem, onDeleteItem, onInputBlur, onInputChange } = this.props;
 
 		return (
 			<div className="main">
 				<ul className="main__list">
 					{items.map((item) => {
-						return <li 
-									key={item.id} 
-									className="main__item"
-								>
-									<TodoItem
-										{...item}
-										onCheckItem={onCheckItem}
-										onDeleteItem={onDeleteItem}
-										onInputBlur={onInputBlur}
-										onInputChange={onInputChange}
-									/>
-								</li>
+						return <li
+							key={item.id}
+							className="main__item"
+						>
+							<TodoItem
+								item={item}
+								inputValue={inputValue}
+								onCheckItem={onCheckItem}
+								onDeleteItem={onDeleteItem}
+								onInputBlur={onInputBlur}
+								onInputChange={onInputChange}
+							/>
+						</li>
 					})}
 				</ul>
 			</div>

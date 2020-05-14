@@ -20,16 +20,14 @@ export class App extends Component {
 
 		this.state = {
 			items: items,
+			input: '',
 			status: 'all'
 		};
 		
 
 		this.addItem = this.addItem.bind(this);
-		this.deleteItem = this.deleteItem.bind(this);
-		this.checkItem = this.checkItem.bind(this);
-		this.inputChange = this.inputChange.bind(this);
 		this.inputBlur = this.inputBlur.bind(this);
-		this.filterItems = this.filterItems.bind(this);
+		this.onInputChange = this.onInputChange.bind(this);
 
 	};
 	
@@ -42,62 +40,49 @@ export class App extends Component {
 		this.setState(({ items }) => {
 			const newItems = update(items, {$unshift: [newItem]});
 			return {
-				items: newItems}
+				items: newItems,
+			}
 		})
 	};
 
-	inputChange = (event) => {
-		const inputValue = event.target.value;
-		return inputValue;
-	}
-
-	inputBlur = (event) => {
-		const itemId = event.target.previousSibling.querySelector('input').getAttribute('id');
-		const itemIndex = this.state.items.findIndex(item => item.id === Number(itemId));
-		const inputValue = event.target.value.trim();
-		this.setState(({ items }) => {
-			const prevItem = items[itemIndex];
-			const updatedItem = {...prevItem, value: inputValue};
-				if (inputValue.length) {
-				const addedItems = [...items.slice(0, itemIndex), updatedItem, ...items.slice(itemIndex + 1)];
-				return {
-					items: addedItems,
-				}
-			} else {
-				const removedItems = [...items.slice(0, itemIndex), ...items.slice(itemIndex + 1)];
-				return {
-					items: removedItems,
-				}
-			}
-		});
-	}
-
-	deleteItem = (event) => {
-		const checkboxId = event.target.previousSibling.previousSibling.querySelector('input').getAttribute('id');
-		const checkboxIndex = this.state.items.findIndex(item => item.id === Number(checkboxId));
-		this.setState(({ items }) => {
-			const updatedItems = [...items.slice(0, checkboxIndex), ...items.slice(checkboxIndex + 1)];
-			return {
-				items: updatedItems,
-			}
+	onInputChange = (event) => {
+		this.setState({
+			input: event.target.value,
 		})
+		console.log(event.target.value);
+	}
+
+
+	inputBlur = (id) => {
+		const inputValue = this.state.input;
+		const inputIndex = this.state.items.findIndex(item => item.id === id);
+		const updatedItems = update(this.state.items, {[inputIndex]: {value: {$set: inputValue}}});
+		this.setState({
+			items: updatedItems,
+			input:''
+		})
+		console.log('text', this.state.input)
+
 	}
 	
-	checkItem = (event) => {
-		const checkboxId = event.target.getAttribute('id');
-		const checkedItemIndex = this.state.items.findIndex(item => item.id === Number(checkboxId));
-		this.setState(({ items }) => {
-			const prevItem = items[checkedItemIndex];
-			const updatedItem = {...prevItem, done: !prevItem.done};
-			const updatedItems = [...items.slice(0, checkedItemIndex), updatedItem, ...items.slice(checkedItemIndex + 1)];
-			return {
-				items: updatedItems,
-			}
+
+	deleteItem = (id) => {
+		const updatedItems = this.state.items.filter(item => item.id !== id);
+		this.setState({
+			items: updatedItems,
+		})
+	}
+
+	checkItem = (id) => {
+		const checkedItemIndex = this.state.items.findIndex(item => item.id === id);
+		const updatedItems = update(this.state.items, {[checkedItemIndex]: {done: {$set: !this.state.items[checkedItemIndex].done}}});
+		this.setState({
+			items: updatedItems,
 		})
 		//localStorage.setItem('saved', JSON.stringify( this.state.items ));
 	}
 	
-	filterItems = () => {
+	filterItems () {
 		switch(this.state.status) {
 			case 'planned':
 				return this.state.items.filter(item => !item.done);
@@ -133,10 +118,11 @@ export class App extends Component {
 						/>
 						<TodoList 
 							items={filteredItems}
+							inputValue={this.state.input}
 							onCheckItem={this.checkItem}
 							onDeleteItem={this.deleteItem}
 							onInputBlur={this.inputBlur}
-							onInputChange={this.inputChange}
+							onInputChange={this.onInputChange}
 						/>
 					</div>
 					<AddButton onAddItem={this.addItem} />
