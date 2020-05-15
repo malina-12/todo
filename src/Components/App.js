@@ -20,14 +20,12 @@ export class App extends Component {
 
 		this.state = {
 			items: items,
-			input: '',
 			status: 'all'
 		};
 		
 
 		this.addItem = this.addItem.bind(this);
-		this.inputBlur = this.inputBlur.bind(this);
-		this.onInputChange = this.onInputChange.bind(this);
+		this.updateItemValue = this.updateItemValue.bind(this);
 
 	};
 	
@@ -45,26 +43,20 @@ export class App extends Component {
 		})
 	};
 
-	onInputChange = (event) => {
-		this.setState({
-			input: event.target.value,
-		})
-		console.log(event.target.value);
-	}
-
-
-	inputBlur = (id) => {
-		const inputValue = this.state.input;
+	updateItemValue = (value, id) => {
 		const inputIndex = this.state.items.findIndex(item => item.id === id);
-		const updatedItems = update(this.state.items, {[inputIndex]: {value: {$set: inputValue}}});
-		this.setState({
-			items: updatedItems,
-			input:''
-		})
-		console.log('text', this.state.input)
-
-	}
-	
+		if(value) {
+			const updatedItems = update(this.state.items, {[inputIndex]: {value: {$set: value}}});
+			this.setState({
+				items: updatedItems,
+			})
+		} else  {
+			const updatedItems = this.state.items.filter(item => item.id !== id);
+			this.setState({
+				items: updatedItems,
+			})
+		}
+	}	
 
 	deleteItem = (id) => {
 		const updatedItems = this.state.items.filter(item => item.id !== id);
@@ -118,11 +110,9 @@ export class App extends Component {
 						/>
 						<TodoList 
 							items={filteredItems}
-							inputValue={this.state.input}
 							onCheckItem={this.checkItem}
 							onDeleteItem={this.deleteItem}
-							onInputBlur={this.inputBlur}
-							onInputChange={this.onInputChange}
+							onUpdateItemValue={this.updateItemValue}
 						/>
 					</div>
 					<AddButton onAddItem={this.addItem} />

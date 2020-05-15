@@ -7,7 +7,7 @@ export class TodoList extends Component {
 	}
 
 	render() {
-		const { items, inputValue , onCheckItem, onDeleteItem, onInputBlur, onInputChange } = this.props;
+		const { items, onCheckItem, onDeleteItem, onUpdateItemValue } = this.props;
 
 		return (
 			<div className="main">
@@ -19,11 +19,9 @@ export class TodoList extends Component {
 						>
 							<TodoItem
 								item={item}
-								inputValue={inputValue}
 								onCheckItem={onCheckItem}
 								onDeleteItem={onDeleteItem}
-								onInputBlur={onInputBlur}
-								onInputChange={onInputChange}
+								onUpdateItemValue={onUpdateItemValue}
 							/>
 						</li>
 					})}

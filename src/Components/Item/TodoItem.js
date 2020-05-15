@@ -4,11 +4,18 @@ import React, { Component } from 'react';
 export class TodoItem extends Component {
 	constructor(props) {
 		super(props);
-	};
+	}
 
-	/* componentDidMount(){
+	onInputBlur = (event) => {
+		this.props.onUpdateItemValue(event.target.value, this.props.item.id);
+		this.setState({
+			input: event.target.value,
+		})
+	}
+
+	componentDidMount(){
 		this.textInput.focus();
-	  } */
+	}
 
 
 	render() {
@@ -25,10 +32,9 @@ export class TodoItem extends Component {
 
 				<input className="main__input"
 					type="text"
-					value={ this.props.item.value }
-					onChange={ this.props.onInputChange }
-					onBlur={ () => this.props.onInputBlur(this.props.item.id) }
-					//ref={ (input) => this.textInput = input }
+					defaultValue={ this.props.item.value }
+					onBlur={ this.onInputBlur }
+					ref={ (input) => this.textInput = input }
 				/>
 				
 				<span className="delete"
