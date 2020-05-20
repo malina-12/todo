@@ -20,7 +20,7 @@ body {
 
 .wrap {
 	display: flex;
-	flex-direction: column;
+	/* flex-direction: column; */
 	justify-content: center;
 	height: 100%;
 }
@@ -75,10 +75,6 @@ ul {
 	transition: all .5s ease;
 }
 
-.active {
-	background-color: #cf83ffdb;
-}
-
 .todo__btn {
 	width: 100%;
 	height: 100%;
@@ -88,6 +84,10 @@ ul {
 	border: none;
 	cursor: pointer;
 	user-select: none;
+}
+
+.active {
+	background-color: #cf83ffdb;
 }
 
 .todo__btn:focus {
@@ -187,6 +187,10 @@ ul {
 	margin-bottom: 10px;
 }
 
+.pages button {
+	display: contents;
+}
+
 .pages span {  
 	width: 25px;
 	height: 25px;
@@ -198,19 +202,9 @@ ul {
 	cursor: default;
 }
 
-.pages__img {
+.pages img {
 	width: 25px;
 	height: 25px;
-	cursor: pointer;
-}
-
-/* Add button */
-
-.container__add {
-	align-self: center;
-	width: 50px;
-	height: 40px;
-	margin-top: -10px;
 	cursor: pointer;
 }
 
@@ -313,6 +307,86 @@ ul {
 	background-color: #fb9494;
 }
 
-.delete:active {
+.current {
 	background-color: #ef4848;
+}
+
+/* Group */
+
+.todo__group {
+	height: 85vh;
+	width: 210px;
+	align-self: center;
+	overflow: hidden;
+	border-radius: 20px;
+}
+
+.todo__create-group {
+	width: 100%;
+	background-color: #f7baac;
+	height: 100px;
+	color: white;
+	line-height: 100px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.group__list {
+	height: 80%;
+}
+
+.group__item {
+	background-color: #ffc4b6bf;
+	height: 85px;
+	text-align: center;
+	line-height: 65px;
+	color: white;
+	cursor: pointer;
+	transition: all .7s ease;
+}
+
+.group__item:hover {
+	background-color: #f7af9dcc;
+}
+
+.group__item:active {
+	background-color: #ffa38ccc;
+}
+
+.group__input {
+	width: 90%;
+	height: 25px;
+	font-size: inherit;
+	text-align: center;
+	border: none;
+	color: white;
+	background-color: #fbbebd00;
+}
+
+.group__input:focus {
+	outline: none;
+	border-bottom: 1px solid;
+}
+
+
+.group__delete {
+	display: block;
+	width: 13px;
+	margin-left: auto;
+}
+
+
+/* Add button */
+
+.container__add {
+	margin: -15px 105px 0;
+	align-self: flex-end;
+	width: 50px;
+	height: 40px;
+	position: absolute;
+}
+
+.container__add-btn {
+	display: contents;
+	cursor: pointer;
 }

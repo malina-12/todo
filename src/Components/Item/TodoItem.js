@@ -4,17 +4,25 @@ import React, { Component } from 'react';
 export class TodoItem extends Component {
 	constructor(props) {
 		super(props);
-	}
+
+		this.state = {
+			input: '',
+		}
+	};
 
 	onInputBlur = (event) => {
-		this.props.onUpdateItemValue(event.target.value, this.props.item.id);
+		this.props.onUpdateItemValue(event.target.value, this.props.id);
 		this.setState({
-			input: event.target.value,
+			input: event.target.value.trim(),
 		})
 	}
+	
+	focusInput = React.createRef();
 
-	componentDidMount(){
-		this.textInput.focus();
+	componentDidMount() {
+		if (!this.props.value) {
+		this.focusInput.focus();
+		}
 	}
 
 
@@ -24,21 +32,21 @@ export class TodoItem extends Component {
 				<label className="main__checkbox">
 					<input 
 						type="checkbox" 
-						onChange={ () => this.props.onCheckItem(this.props.item.id) } 
-						checked={ this.props.item.done } 
+						onChange={ () => this.props.onCheckItem(this.props.id) } 
+						checked={ this.props.done } 
 						/>
 					<span className="checkmark"></span>
 				</label>
 
 				<input className="main__input"
 					type="text"
-					defaultValue={ this.props.item.value }
+					defaultValue={ this.props.value }
 					onBlur={ this.onInputBlur }
-					ref={ (input) => this.textInput = input }
+					ref={ (input) => this.focusInput = input }
 				/>
 				
 				<span className="delete"
-					onClick={ () => this.props.onDeleteItem(this.props.item.id) }
+					onClick={ () => this.props.onDeleteItem(this.props.id) }
 				>
 				</span>
 			</>

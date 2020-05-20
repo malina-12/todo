@@ -9,7 +9,7 @@ export class AddButton extends Component {
     render() {
         return (
             <div className="container__add">
-                <a 
+                <button type='button' 
                     className="container__add-btn" 
                     onClick={ this.props.onAddItem } >
                         <svg width="50" height="50">
@@ -17,7 +17,7 @@ export class AddButton extends Component {
 						<line strokeWidth="2" x1="15" x2="35" y1="25" y2="25" stroke="#fff"></line>
 						<line strokeWidth="2" x1="25" x2="25" y1="15" y2="35" stroke="#fff"></line>
 					</svg>
-                </a>
+                </button>
             </div>
         )
     }

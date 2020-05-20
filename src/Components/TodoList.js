@@ -18,7 +18,7 @@ export class TodoList extends Component {
 							className="main__item"
 						>
 							<TodoItem
-								item={item}
+								{...item}
 								onCheckItem={onCheckItem}
 								onDeleteItem={onDeleteItem}
 								onUpdateItemValue={onUpdateItemValue}
