@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import deleteimg from '../Images/delete.png'
+import deleteimg from '../../Images/delete.png'
 
-export class Group extends Component {
+export class GroupInput extends Component {
 	constructor(props) {
 		super(props);
 

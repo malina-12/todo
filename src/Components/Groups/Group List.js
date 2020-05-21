@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Group } from './Group.js'
+import { GroupInput } from './GroupInput.js'
 
 export class Groups extends Component {
 	constructor(props) {
@@ -7,8 +7,8 @@ export class Groups extends Component {
 	}
 
 	render() {
-		const { groups, createNewGroup, onRenameGroup, onDeleteGroup } = this.props;
-
+		const { groups, currentGroup, createNewGroup, onSwitchGroup, onRenameGroup, onDeleteGroup } = this.props;
+		
 		return (
 			<div className="todo__group">
 				<div 
@@ -20,9 +20,12 @@ export class Groups extends Component {
 					{groups.map(group => {
 						return <li
 							key={group.id}
-							className={"group__item"}
+							className={currentGroup === group.id ? "group__item current" : "group__item"}
+							onClick={() => {
+									onSwitchGroup(group.id);
+								}}
 						>
-							<Group
+							<GroupInput
 								{...group}
 								onRenameGroup={onRenameGroup}
 								onDeleteGroup={onDeleteGroup}

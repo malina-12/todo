@@ -333,6 +333,7 @@ ul {
 
 .group__list {
 	height: 80%;
+	overflow-y: scroll;
 }
 
 .group__item {
@@ -349,7 +350,7 @@ ul {
 	background-color: #f7af9dcc;
 }
 
-.group__item:active {
+.current {
 	background-color: #ffa38ccc;
 }
 
@@ -373,6 +374,23 @@ ul {
 	display: block;
 	width: 13px;
 	margin-left: auto;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 8px;
+    background-color: #fbbebd;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #ffa38c;
+    border-radius: 9em;
+    box-shadow: inset 1px 1px 10px #fff3f3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #253861;
 }
 
 

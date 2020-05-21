@@ -16,6 +16,7 @@ export class Pagination extends Component {
 			<div className='pages'>
 				<button 
 					type='button'
+					onClick={this.props.switchToFirstPage}
 				>
 					<img 
 						src={firstPage} 
@@ -34,15 +35,17 @@ export class Pagination extends Component {
 				<span className="pages__current">{this.props.currentPage}</span>
 
 				<button 
-				type='button'
-					onClick={this.props.switchToNextPage}
+					type='button'
+					onClick={() => this.props.switchToNextPage(this.props.items)}
 				>
 					<img 
 						src={nextPage} 
 						alt='next page' />
 				</button>
 
-				<button type='button'
+				<button 
+					type='button'
+					onClick={this.props.switchToLastPage}
 				>
 					<img 
 						src={lastPage} 
