@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import update from 'immutability-helper';
 import { AddButton } from './AddButton.js';
 import { TabNav } from './TabNav/TabNav.js';
-import { Groups } from './Groups/Group List.js';
+import { GroupList } from './Groups/Group List.js';
 import { TAB_NAV_OPTIONS } from "./TabNav/TabNavOptions.js";
 import { TodoList } from './TodoList.js';
 import { Pagination } from './Pagination.js'
@@ -41,7 +41,7 @@ export class App extends Component {
 		this.getItemsLocalStorage = this.getItemsLocalStorage.bind(this);
 		this.switchToNextPage = this.switchToNextPage.bind(this);
 		this.switchToPrevPage = this.switchToPrevPage.bind(this);
-
+		this.filterGroup = this.filterGroup.bind(this);
 	};
 	
 	getItemsLocalStorage = () => localStorage.getItem('saved') !== null ? JSON.parse(localStorage.getItem('saved')) : [];
@@ -96,16 +96,16 @@ export class App extends Component {
 		console.log(checkedItem)
 	}
 	
-	filterItems () {
+	filterItems (arr) {
 		switch(this.state.status) {
 			case 'planned':
-				return this.state.items.filter(item => !item.done);
+				return arr.filter(item => !item.done);
 			
 			case 'done':
-				return this.state.items.filter(item => item.done);
+				return arr.filter(item => item.done);
 
 			default:
-				return this.state.items;
+				return arr;
 		}
 	}
 
@@ -158,7 +158,7 @@ export class App extends Component {
 
 	renameGroup = (name, id) => {
 		const updatedGroups = [...this.state.groups];
-		const findedtGroup = this.state.groups.find(group => group.id === id);
+		const findedtGroup = updatedGroups.find(group => group.id === id);
 		if(name) {
 			findedtGroup.name = name;
 			this.setState({
@@ -180,26 +180,36 @@ export class App extends Component {
 		console.log(updatedGroup);
 	}
 
+	filterGroup = () => {
+		const filteredGroup = this.state.items.filter(item => item.group === this.state.currentGroup);
+		console.log('это фильтр групп', filteredGroup);
+		return filteredGroup;
+	}
+
 	switchGroup = (id) => {
 		this.setState({
 			currentGroup: id,
 		})
-		console.log(id)
-	}
+		console.log('target id ->', id)
+	}	
 
 	componentDidUpdate() {
-		console.log('groups ->', this.state.groups, 'items ->', this.state.items);
+		//console.log('groups ->', this.state.groups, 'items ->', this.state.items);
 		localStorage.setItem('saved', JSON.stringify( this.state.items));
+		console.log( 'in state ->', this.state.currentGroup)
 	}
 	
 	render() { 
-		const filteredItems = this.getItemsOnPage(this.filterItems());
-	// создать массив, видимый пользователю. в пагинацию передавать отфильтрованный массив
+		let filteredItems = this.filterGroup();
+		filteredItems = this.filterItems(filteredItems);
+		filteredItems = this.getItemsOnPage(filteredItems);
+		
 
 		return (
 			<div className="container">
 				<div className="wrap">
-						<Groups
+						<GroupList
+							items={filteredItems}
 							groups={this.state.groups}
 							currentGroup={this.state.currentGroup}
 							createNewGroup={this.createNewGroup}

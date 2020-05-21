@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { GroupInput } from './GroupInput.js'
 
-export class Groups extends Component {
+export class GroupList extends Component {
 	constructor(props) {
 		super(props);
 	}
