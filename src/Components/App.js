@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import update from 'immutability-helper';
 import { AddButton } from './AddButton.js';
-import { TabNav } from './TabNav/TabNav.js';
-import { GroupList } from './Groups/Group List.js';
-import { TAB_NAV_OPTIONS } from "./TabNav/TabNavOptions.js";
-import { TodoList } from './TodoList.js';
-import { Pagination } from './Pagination.js'
+import { TabNav } from '../utils/TabNav/TabNav.js';
+import GroupList from '../utils/Groups/Group List.js';
+import { TAB_NAV_OPTIONS } from "../utils/TabNav/TabNavOptions.js";
+import  TodoList  from './TodoList.js';
+import Pagination from '../utils/Pagination/Pagination.js'
 
 export class App extends Component {
 	
@@ -15,10 +15,11 @@ export class App extends Component {
 	constructor(props) {
 		super(props);
 		const items = this.getItemsLocalStorage();
-		const groups = [{
-			id: this.counterGroup,
-			name: `Group ${this.counterGroup}`}];
-		
+		const groups = this.getGroupsLocalStorage();
+		const LIMIT = 10;
+		let currentItems =  items.filter(item => item.group === 1);
+
+
 		this.counter = Math.max(...items.map(item => item.id));
 		this.counter = this.counter === -Infinity ? 1 : this.counter + 1;
 
@@ -26,26 +27,22 @@ export class App extends Component {
 
 		this.state = {
 			items: items,
+			filteredItems: [],
+			currentItems: currentItems,
+			showingItems:[],
 			groups: groups,
 			currentGroup: 1,
 			status: 'all',
 			currentPage: 1,
-			limitItemsPerPage: 10,
+			limitItemsPerPage: LIMIT,
 		};
 		
-
-		this.addItem = this.addItem.bind(this);
-		this.createNewGroup = this.createNewGroup.bind(this);
-		this.renameGroup = this.renameGroup.bind(this);
-		this.updateItemValue = this.updateItemValue.bind(this);
-		this.getItemsLocalStorage = this.getItemsLocalStorage.bind(this);
-		this.switchToNextPage = this.switchToNextPage.bind(this);
-		this.switchToPrevPage = this.switchToPrevPage.bind(this);
-		this.filterGroup = this.filterGroup.bind(this);
 	};
 	
 	getItemsLocalStorage = () => localStorage.getItem('saved') !== null ? JSON.parse(localStorage.getItem('saved')) : [];
+	getGroupsLocalStorage = () => localStorage.getItem('savedGroups') !== null ? JSON.parse(localStorage.getItem('savedGroups')) : [{id: this.counterGroup,	name: `Group ${this.counterGroup}`}];
 
+	
 	addItem = () => {
 		const newItem = {
 			done: false,
@@ -61,11 +58,11 @@ export class App extends Component {
 			}
 		})
 		this.changeStatus('all');
-	};
+	}
 
 	updateItemValue = (value, id) => {
 		const updatedItems = [...this.state.items];
-		const updatedItem = this.state.items.find(item => item.id === id);
+		const updatedItem = updatedItems.find(item => item.id === id);
 		if(value) {
 			updatedItem.value = value.trim();
 			this.setState({
@@ -96,50 +93,8 @@ export class App extends Component {
 		console.log(checkedItem)
 	}
 	
-	filterItems (arr) {
-		switch(this.state.status) {
-			case 'planned':
-				return arr.filter(item => !item.done);
-			
-			case 'done':
-				return arr.filter(item => item.done);
 
-			default:
-				return arr;
-		}
-	}
-
-	changeStatus = (status) => {
-		this.setState({
-			status: status,
-		});
-	}
-
-	getItemsOnPage = (arr) => {
-		const start = (this.state.currentPage - 1) * this.state.limitItemsPerPage;
-		const end = start + this.state.limitItemsPerPage;
-		const currentPageItems = arr.slice(start, end);
-		return currentPageItems;
-	}
-
-	switchToNextPage = (arr) => {
-		const totalPages = Math.ceil(arr.length/this.state.limitItemsPerPage);
-		this.setState(({ currentPage }) => {
-			if(currentPage < totalPages) {
-			return {
-				currentPage: currentPage+1,
-			}}
-		});
-	}
-
-	switchToPrevPage = () => {
-		this.setState(({ currentPage }) => {
-			if(currentPage > 1) {
-			return {
-				currentPage: currentPage-1,
-			}}
-		});
-	}
+	/* Groups */
 
 	createNewGroup = () => {
 		const newGroup = {
@@ -150,9 +105,10 @@ export class App extends Component {
 		this.setState(({ groups }) => {
 			const addedGroup = update(groups, {$push: [newGroup]});
 			return {
-				groups: addedGroup
+				groups: addedGroup,
 			}
 		});
+		this.filterGroup(this.counterGroup);
 		console.log('group created', this.state.groups)
 	}
 
@@ -177,43 +133,116 @@ export class App extends Component {
 		this.setState({
 			groups: updatedGroup,
 		})
-		console.log(updatedGroup);
 	}
 
-	filterGroup = () => {
-		const filteredGroup = this.state.items.filter(item => item.group === this.state.currentGroup);
-		console.log('это фильтр групп', filteredGroup);
-		return filteredGroup;
-	}
-
-	switchGroup = (id) => {
+	filterGroup = (id) => {
+		const {items} = this.state;
+		const updatedItems = [...items];
+		const filteredGroup = updatedItems.filter(item => item.group === id);
 		this.setState({
+			filteredItems: filteredGroup,
 			currentGroup: id,
-		})
-		console.log('target id ->', id)
-	}	
+			currentPage: 1,
+		}, () => this.changeStatus('all'))
+	}
+
+	/* Filter status */
+
+		filterItems = (arr, status) => {
+			switch(status) {
+			case 'planned':
+				return arr.filter(item => !item.done);
+
+			case 'done':
+				return arr.filter(item => item.done);
+
+			default:
+				return arr;
+		}	
+	}
+
+	changeStatus = (status) => {
+		const {filteredItems} = this.state;
+		const updatedItems = [...filteredItems];
+		let filteredByStatusItems = this.filterItems(updatedItems, status);
+		this.setState({
+			status: status,
+			currentItems: filteredByStatusItems
+		}, () => this.getItemsOnPage());
+	}
+
+	/* Pages */
+
+	getItemsOnPage = () => {
+		const {currentPage, limitItemsPerPage, currentItems} = this.state;
+		const updatedItems = [...currentItems];
+		const start = (currentPage - 1) * limitItemsPerPage;
+		const end = start + limitItemsPerPage;
+		const currentPageItems = updatedItems.slice(start, end);
+		this.setState({
+			showingItems: currentPageItems
+		}, () => console.log('lol', this.state.showingItems))
+	}
+
+	switchToFirstPage = () => {
+		this.setState({
+			currentPage: 1,
+		}, () => this.getItemsOnPage())
+	}
+
+	switchToNextPage = () => {
+		const {currentItems, limitItemsPerPage} = this.state;
+		const totalPages = Math.ceil(currentItems.length/limitItemsPerPage);
+		this.setState(({ currentPage }) => {
+			if(currentPage < totalPages) {
+			return {
+				currentPage: currentPage+1,
+
+			}}
+		}, () => this.getItemsOnPage());
+	}
+
+	switchToPrevPage = () => {
+		this.setState(({ currentPage }) => {
+			if(currentPage > 1) {
+			return {
+				currentPage: currentPage-1,
+			}}
+		}, () => this.getItemsOnPage());
+	}
+
+	switchToLastPage = () => {
+		const {currentItems, limitItemsPerPage} = this.state;
+		const totalPages = Math.ceil(currentItems.length/limitItemsPerPage);
+		this.setState({
+				currentPage: totalPages,
+		}, () => this.getItemsOnPage())
+	}
+
+	componentWillMount(){
+		this.getItemsOnPage();
+	}
+
+	componentDidMount() {
+		this.filterGroup(1);
+	}
 
 	componentDidUpdate() {
-		//console.log('groups ->', this.state.groups, 'items ->', this.state.items);
-		localStorage.setItem('saved', JSON.stringify( this.state.items));
-		console.log( 'in state ->', this.state.currentGroup)
+		localStorage.setItem('saved', JSON.stringify(this.state.items));
+		localStorage.setItem('savedGroups', JSON.stringify(this.state.groups));
+
 	}
 	
-	render() { 
-		let filteredItems = this.filterGroup();
-		filteredItems = this.filterItems(filteredItems);
-		filteredItems = this.getItemsOnPage(filteredItems);
-		
+	render() {
 
 		return (
 			<div className="container">
 				<div className="wrap">
 						<GroupList
-							items={filteredItems}
 							groups={this.state.groups}
 							currentGroup={this.state.currentGroup}
 							createNewGroup={this.createNewGroup}
-							onSwitchGroup={this.switchGroup}
+							onFilterGroup={this.filterGroup}
 							onRenameGroup={this.renameGroup}
 							onDeleteGroup={this.deleteGroup}
 						/>
@@ -224,17 +253,17 @@ export class App extends Component {
 							activeTab={this.state.status}
 						/>
 						<TodoList 
-							items={filteredItems}
+							items={this.state.showingItems}
 							onCheckItem={this.checkItem}
 							onDeleteItem={this.deleteItem}
 							onUpdateItemValue={this.updateItemValue}
 						/>
 						<Pagination
 							currentPage={this.state.currentPage}
+							switchToFirstPage={this.switchToFirstPage}
 							switchToNextPage={this.switchToNextPage}
 							switchToPrevPage={this.switchToPrevPage}
-							items={filteredItems}
-
+							switchToLastPage={this.switchToLastPage}
 						/>
 					</div>
 					<AddButton onAddItem={this.addItem} />

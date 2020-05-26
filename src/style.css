@@ -337,13 +337,13 @@ ul {
 }
 
 .group__item {
-	background-color: #ffc4b6bf;
-	height: 85px;
-	text-align: center;
-	line-height: 65px;
-	color: white;
-	cursor: pointer;
-	transition: all .7s ease;
+    background-color: #ffc4b6bf;
+    height: 83px;
+    text-align: center;
+    line-height: 60px;
+    color: white;
+    cursor: pointer;
+    transition: all .7s ease;
 }
 
 .group__item:hover {

@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
-import { GroupInput } from './GroupInput.js'
+import  Group from './Group.js'
 
-export class GroupList extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const { groups, currentGroup, createNewGroup, onSwitchGroup, onRenameGroup, onDeleteGroup } = this.props;
-		
+const GroupList = ({ groups, currentGroup, createNewGroup, onFilterGroup, onRenameGroup, onDeleteGroup }) => {
 		return (
 			<div className="todo__group">
 				<div 
@@ -22,10 +15,10 @@ export class GroupList extends Component {
 							key={group.id}
 							className={currentGroup === group.id ? "group__item current" : "group__item"}
 							onClick={() => {
-									onSwitchGroup(group.id);
+									onFilterGroup(group.id);
 								}}
 						>
-							<GroupInput
+							<Group
 								{...group}
 								onRenameGroup={onRenameGroup}
 								onDeleteGroup={onDeleteGroup}
@@ -36,4 +29,5 @@ export class GroupList extends Component {
 			</div>
 		)
 	}
-}
+
+	export default GroupList

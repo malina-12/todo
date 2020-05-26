@@ -17,7 +17,6 @@ export class TodoItem extends Component {
 		})
 	}
 	
-	focusInput = React.createRef();
 
 	componentDidMount() {
 		if (!this.props.value) {
