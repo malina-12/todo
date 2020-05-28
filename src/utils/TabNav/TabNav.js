@@ -1,12 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export class TabNav extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const { activeTab, options, onSwitchTab } = this.props;
+const TabNav = ({ activeTab, options, onSwitchTab }) => {
 
 		return (
 			<div className="todo__header">
@@ -28,4 +22,5 @@ export class TabNav extends Component {
 			</div>
 		)
 	}
-}
+
+export default TabNav

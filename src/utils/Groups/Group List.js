@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import  Group from './Group.js'
 
 const GroupList = ({ groups, currentGroup, createNewGroup, onFilterGroup, onRenameGroup, onDeleteGroup }) => {

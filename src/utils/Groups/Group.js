@@ -27,7 +27,7 @@ export default class Group extends Component {
 
 		return (
 			<>
-				<img src={deleteImg}
+				<img alt="delete" src={deleteImg}
 					className="group__delete"
 					onClick={() => this.props.onDeleteGroup(this.props.id)}
 				/>

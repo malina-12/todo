@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import update from 'immutability-helper';
-import { AddButton } from './AddButton.js';
-import { TabNav } from '../utils/TabNav/TabNav.js';
+import AddButton from './AddButton.js';
+import TabNav from '../utils/TabNav/TabNav.js';
 import GroupList from '../utils/Groups/Group List.js';
 import { TAB_NAV_OPTIONS } from "../utils/TabNav/TabNavOptions.js";
 import  TodoList  from './TodoList.js';
@@ -56,7 +56,7 @@ export class App extends Component {
 				items: newItems,
 				currentPage: 1,
 			}
-		})
+		}, () => this.filterGroup(this.state.currentGroup))
 		this.changeStatus('all');
 	}
 
@@ -80,7 +80,7 @@ export class App extends Component {
 		const updatedItems = this.state.items.filter(item => item.id !== id);
 		this.setState({
 			items: updatedItems,
-		})
+		}, () => this.filterGroup(this.state.currentGroup))
 	}
 
 	checkItem = (id) => {
@@ -109,19 +109,18 @@ export class App extends Component {
 			}
 		});
 		this.filterGroup(this.counterGroup);
-		console.log('group created', this.state.groups)
 	}
 
 	renameGroup = (name, id) => {
 		const updatedGroups = [...this.state.groups];
-		const findedtGroup = updatedGroups.find(group => group.id === id);
+		const findedGroup = updatedGroups.find(group => group.id === id);
 		if(name) {
-			findedtGroup.name = name;
+			findedGroup.name = name;
 			this.setState({
 				groups: updatedGroups,
 			})
 		} else {
-			findedtGroup.name = `Group ${this.counterGroup}`;
+			findedGroup.name = `Group ${this.counterGroup}`;
 			this.setState({
 				groups: updatedGroups,
 			})
@@ -167,7 +166,8 @@ export class App extends Component {
 		let filteredByStatusItems = this.filterItems(updatedItems, status);
 		this.setState({
 			status: status,
-			currentItems: filteredByStatusItems
+			currentItems: filteredByStatusItems,
+			currentPage: 1
 		}, () => this.getItemsOnPage());
 	}
 
@@ -181,7 +181,7 @@ export class App extends Component {
 		const currentPageItems = updatedItems.slice(start, end);
 		this.setState({
 			showingItems: currentPageItems
-		}, () => console.log('lol', this.state.showingItems))
+		})
 	}
 
 	switchToFirstPage = () => {
@@ -197,7 +197,6 @@ export class App extends Component {
 			if(currentPage < totalPages) {
 			return {
 				currentPage: currentPage+1,
-
 			}}
 		}, () => this.getItemsOnPage());
 	}
@@ -214,12 +213,14 @@ export class App extends Component {
 	switchToLastPage = () => {
 		const {currentItems, limitItemsPerPage} = this.state;
 		const totalPages = Math.ceil(currentItems.length/limitItemsPerPage);
-		this.setState({
+		this.setState(({ currentPage }) => {
+			if(totalPages) {
+				return {
 				currentPage: totalPages,
-		}, () => this.getItemsOnPage())
+		}}}, () => this.getItemsOnPage())
 	}
 
-	componentWillMount(){
+	UNSAFE_componentWillMount() {
 		this.getItemsOnPage();
 	}
 
