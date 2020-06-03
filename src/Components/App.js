@@ -14,17 +14,6 @@ export class App extends Component {
 	LIMIT = 10;
 	constructor(props) {
 		super(props);
-/* 		const items = [];
-		const groups = [];
-		const LIMIT = 10;
-		let currentItems =  items.filter(item => item.group === 1);
-
-
-		this.counter = Math.max(...items.map(item => item.id));
-		this.counter = this.counter === -Infinity ? 1 : this.counter + 1;
-
-		this.counterGroup = Math.max(...groups.map(group => group.id));
-		this.counterGroup = this.counterGroup === -Infinity ? 1 : this.counterGroup + 1; */
 
 		this.state = {
 			items: [],
@@ -227,26 +216,25 @@ export class App extends Component {
 		}}}, () => this.getItemsOnPage())
 	}
 
-	getDerriveredStateFromState() {
+	getDerivedStateFromState() {
 		this.getItemsOnPage();
 	}
 
 	componentDidMount() {
 		const {items, groups} = this.state;
-		const updatedItems = [...items];
-		let currentItems =  updatedItems.filter(item => item.group === 1);
-		this.counter = Math.max(...updatedItems.map(item => item.id));
-		this.counter = this.counter === -Infinity ? 1 : this.counter + 1;
-	
-		this.counterGroup = Math.max(...groups.map(group => group.id));
-		this.counterGroup = this.counterGroup === -Infinity ? 1 : this.counterGroup + 1;
-		this.setState({
+		let currentItems =  items.filter(item => item.group === 1);
+			this.setState({
 			items: this.getItemsLocalStorage(),
 			groups: this.getGroupsLocalStorage(),
 			currentItems: currentItems,
 			limitItemsPerPage: this.LIMIT,
 		}, () => this.filterGroup(1))
-		
+
+		this.counter = Math.max(...items.map(item => item.id));
+		this.counter = this.counter === -Infinity ? 1 : this.counter + 1;
+	
+		this.counterGroup = Math.max(...groups.map(group => group.id));
+		this.counterGroup = this.counterGroup === -Infinity ? 1 : this.counterGroup + 1;
 	}
 
 	componentDidUpdate() {
