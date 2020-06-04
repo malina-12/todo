@@ -7,6 +7,8 @@ import { TAB_NAV_OPTIONS } from "./TabNav/TabNavOptions.js";
 import  TodoList  from './TodoList.js';
 import Pagination from './Pagination/Pagination.js'
 
+/* TODO add Routing */
+/* TODO add Reudx */
 export class App extends Component {
 	
 	counter = 0;
@@ -65,7 +67,7 @@ export class App extends Component {
 			})
 		}
 	}	
-
+/* TODO fix showing items */
 	deleteItem = id => {
 		const {items} = this.state;
 		const updatedItems = [...items];
@@ -117,7 +119,7 @@ export class App extends Component {
 			})
 		}
 	}
-
+/* TODO switch to default group if current group is deleted*/
 	deleteGroup = id => {
 		const {items, groups} = this.state;
 		const updatedGroups = [...groups];
@@ -221,14 +223,17 @@ export class App extends Component {
 	}
 
 	componentDidMount() {
-		const {items, groups} = this.state;
-		let currentItems =  items.filter(item => item.group === 1);
+			let items = this.getItemsLocalStorage();
+			let groups = this.getGroupsLocalStorage();
+			let currentItems =  items.filter(item => item.group === 1);
+
 			this.setState({
-			items: this.getItemsLocalStorage(),
-			groups: this.getGroupsLocalStorage(),
+			items: items,
+			groups: groups,
 			currentItems: currentItems,
 			limitItemsPerPage: this.LIMIT,
-		}, () => this.filterGroup(1))
+		}, () => this.filterGroup(1),
+		)
 
 		this.counter = Math.max(...items.map(item => item.id));
 		this.counter = this.counter === -Infinity ? 1 : this.counter + 1;
