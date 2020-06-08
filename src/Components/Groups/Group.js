@@ -21,7 +21,12 @@ export default class Group extends Component {
         input: this.props.name,
       });
     }
-  };
+	};
+	
+	onDelete = (event) => {
+		event.stopPropagation();
+		this.props.deleteGroup(this.props.id)
+	}
 
   render() {
     return (
@@ -30,7 +35,7 @@ export default class Group extends Component {
           alt="delete"
           src={deleteImg}
           className="group__delete"
-          onClick={() => this.props.deleteGroup(this.props.id)}
+          onClick={this.onDelete}
         />
         <input
           className="group__input"

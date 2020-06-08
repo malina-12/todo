@@ -164,6 +164,8 @@ export class App extends Component {
   };
 
   deleteGroup = (id) => {
+		console.log('delete');
+		
     const { items, groups } = this.state;
     const updatedGroups = [...groups];
     const updatedItems = [...items];
@@ -198,6 +200,8 @@ export class App extends Component {
   };
 
   switchGroup = (id) => {
+		console.log('switch');
+		
     const { items } = this.state;
     const updatedItems = [...items];
     const { filteredByPage } = this.commonFilter(updatedItems, "all", id, 1);
@@ -352,7 +356,9 @@ export class App extends Component {
       currentGroup,
       status,
       currentPage,
-    } = this.state;
+		} = this.state;
+		// console.log(JSON.stringify(this.state, null, ' '));
+		
     return (
       <div className="container">
         <div className="wrap">
