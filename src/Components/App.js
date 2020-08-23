@@ -7,8 +7,6 @@ import { TAB_NAV_OPTIONS } from "./TabNav/TabNavOptions.js";
 import TodoList from "./TodoList.js";
 import Pagination from "./Pagination/Pagination.js";
 
-/* TODO add Routing */
-/* TODO add Reudx */
 export class App extends Component {
   counter = 0;
   counterGroup = 1;
@@ -389,8 +387,8 @@ export class App extends Component {
               switchToPrevPage={this.switchToPrevPage}
               switchToLastPage={this.switchToLastPage}
             />
-          </div>
           <AddButton onAddItem={this.addItem} />
+          </div>
         </div>
       </div>
     );

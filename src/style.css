@@ -20,9 +20,8 @@ body {
 
 .wrap {
 	display: flex;
-	align-self: center;
-	justify-content: center;
-	height: 60%;
+    padding: 40px;
+    height: 100%;
 }
 
 .todo {
@@ -33,6 +32,7 @@ body {
 	flex-direction: column;
 	border-radius: 21px;
 	background-color: #fff;
+	position: relative;
 }
 
 /* Header */
@@ -157,7 +157,7 @@ ul {
 	align-self: center;
 	width: 90%;
 	height: 80%;
-    margin: 10px 0 20px;
+    margin-top: 10px;
 	overflow: hidden;
 }
 
@@ -184,7 +184,7 @@ ul {
 	justify-content: space-between;
 	align-self: center;
 	width: 80%;
-	margin-bottom: 10px;
+	margin: 10px 0;
 }
 
 .pages button {
@@ -314,26 +314,29 @@ ul {
 /* Group */
 
 .todo__group {
-	height: 520px;
-	width: 210px;
-	align-self: center;
-	overflow: hidden;
-	border-radius: 20px;
+	height: 100%;
+    max-height: 520px;
+    width: 210px;
+    align-self: center;
+    overflow: hidden;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .todo__create-group {
 	width: 100%;
 	background-color: #f7baac;
-	height: 100px;
 	color: white;
 	line-height: 100px;
 	text-align: center;
+	flex-shrink: 0;
 	cursor: pointer;
 }
 
 .group__list {
-	height: 80%;
 	overflow-y: scroll;
+	flex-grow: 1;
 }
 
 .group__item {
@@ -397,11 +400,9 @@ ul {
 /* Add button */
 
 .container__add {
-	margin: -15px 105px 0;
-	align-self: flex-end;
-	width: 50px;
-	height: 40px;
-	position: absolute;
+	align-self: center;
+    position: absolute;
+    top: calc(100% - 13px);
 }
 
 .container__add-btn {
