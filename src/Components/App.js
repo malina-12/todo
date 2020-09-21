@@ -1,14 +1,21 @@
-import React, { Component } from "react";
-import update from "immutability-helper";
-import AddButton from "./AddButton.js";
-import TabNav from "./TabNav/TabNav.js";
-import GroupList from "./Groups/GroupList.js";
-import { TAB_NAV_OPTIONS } from "./TabNav/TabNavOptions.js";
-import TodoList from "./TodoList.js";
-import Pagination from "./Pagination/Pagination.js";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export class App extends Component {
-  counter = 0;
+import AddButton from './AddButton.js';
+import TabNav from './TabNav/TabNav.js';
+import GroupList from './Groups/GroupList.js';
+import TodoList from './TodoList.js';
+import Pagination from './Pagination/Pagination.js';
+
+import { TAB_NAV_OPTIONS } from './TabNav/TabNavOptions.js';
+import { commonFilter } from '../utils'
+import { getItemsLocalStorage, getGroupsLocalStorage } from '../utils';
+
+import { checkItem } from '../ActionCreators';
+
+import { v4 as generateId } from 'uuid';
+
+class App extends Component {
   counterGroup = 1;
   constructor() {
     super();
@@ -18,28 +25,10 @@ export class App extends Component {
       groups: [],
       showingItems: [],
       currentGroup: 1,
-      status: "all",
+      status: 'all',
       currentPage: 1,
     };
   }
-
-  getItemsLocalStorage = () =>
-    localStorage.getItem("saved") !== null
-      ? JSON.parse(localStorage.getItem("saved"))
-      : [];
-  getGroupsLocalStorage = () =>
-    localStorage.getItem("savedGroups") !== null
-      ? JSON.parse(localStorage.getItem("savedGroups"))
-      : [{ id: this.counterGroup, name: `Group ${this.counterGroup}` }];
-
-  /* Main filter */
-
-  commonFilter = (arr, status, groupId, page) => {
-    const filteredByGroup = this.filterGroup(arr, groupId);
-    const filteredByStatus = this.filterItems(filteredByGroup, status);
-    const filteredByPage = this.showItems(filteredByStatus, page);
-    return { filteredByGroup, filteredByStatus, filteredByPage };
-  };
 
   /* Todo items */
 
@@ -47,22 +36,21 @@ export class App extends Component {
     const { items, currentGroup } = this.state;
     const newItem = {
       done: false,
-      value: "",
+      value: '',
       group: this.state.currentGroup,
-      id: this.counter++,
+      id: generateId(),
     };
-    const updatedItems = [...items];
-    const newItems = update(updatedItems, { $unshift: [newItem] });
-    const { filteredByPage } = this.commonFilter(
-      newItems,
-      "all",
+    const updatedItems = [newItem, ...items];
+    const { filteredByPage } = commonFilter(
+      updatedItems,
+      'all',
       currentGroup,
       1
     );
     this.setState({
-      items: newItems,
+      items: updatedItems,
       showingItems: filteredByPage,
-      status: "all",
+      status: 'all',
       currentGroup: currentGroup,
       currentPage: 1,
     });
@@ -71,8 +59,8 @@ export class App extends Component {
   updateItemValue = (value, id) => {
     const { items, status, currentGroup, currentPage } = this.state;
     const updatedItems = [...items];
-    const updatedItem = updatedItems.find((item) => item.id === id);
-    const { filteredByPage } = this.commonFilter(
+    const updatedItem = items.find((item) => item.id === id);
+    const { filteredByPage } = commonFilter(
       updatedItems,
       status,
       currentGroup,
@@ -93,12 +81,16 @@ export class App extends Component {
     }
   };
 
-  checkItem = (id) => {
+  check = id => {
+    this.props.checkItem(id)
+    console.log(this.props);
+  }
+/*   checkItem = id => {
     const { items, status, currentGroup, currentPage } = this.state;
     const updatedItems = [...items];
     const checkedItem = updatedItems.find((item) => item.id === id);
     checkedItem.done = !checkedItem.done;
-    const { filteredByPage } = this.commonFilter(
+    const { filteredByPage } = commonFilter(
       updatedItems,
       status,
       currentGroup,
@@ -108,13 +100,12 @@ export class App extends Component {
       items: updatedItems,
       showingItems: filteredByPage,
     });
-  };
+  }; */
 
-  deleteItem = (id) => {
+  deleteItem = id => {
     const { items, status, currentGroup, currentPage } = this.state;
-    const updatedItems = [...items];
-    const foundItems = updatedItems.filter((item) => item.id !== id);
-    const { filteredByPage } = this.commonFilter(
+    const foundItems = items.filter((item) => item.id !== id);
+    const { filteredByPage } = commonFilter(
       foundItems,
       status,
       currentGroup,
@@ -129,19 +120,19 @@ export class App extends Component {
   /* Groups */
 
   createNewGroup = () => {
+    const { groups } = this.state;
     const newGroup = {
       id: ++this.counterGroup,
       name: `Group ${this.counterGroup}`,
     };
-    this.setState(({ groups }) => {
-      const addedGroup = update(groups, { $push: [newGroup] });
-      return {
+    const addedGroup = [...groups, newGroup];
+
+    this.setState({
         groups: addedGroup,
         showingItems: [],
         currentPage: 1,
-        status: "all",
+        status: 'all',
         currentGroup: this.counterGroup,
-      };
     });
   };
 
@@ -161,9 +152,7 @@ export class App extends Component {
     }
   };
 
-  deleteGroup = (id) => {
-		console.log('delete');
-		
+  deleteGroup = id => {
     const { items, groups } = this.state;
     const updatedGroups = [...groups];
     const updatedItems = [...items];
@@ -171,9 +160,9 @@ export class App extends Component {
     const foundItems = updatedItems.filter((item) => item.group !== id);
     if (foundGroup.length) {
       const firstId = foundGroup[0].id;
-      const { filteredByPage } = this.commonFilter(
+      const { filteredByPage } = commonFilter(
         foundItems,
-        "all",
+        'all',
         firstId,
         1
       );
@@ -192,44 +181,24 @@ export class App extends Component {
     }
   };
 
-  filterGroup = (arr, groupId) => {
-    const flitered = arr.filter((item) => item.group === groupId);
-    return flitered;
-  };
-
-  switchGroup = (id) => {
-		console.log('switch');
-		
+  switchGroup = id => {
     const { items } = this.state;
     const updatedItems = [...items];
-    const { filteredByPage } = this.commonFilter(updatedItems, "all", id, 1);
+    const { filteredByPage } = commonFilter(updatedItems, 'all', id, 1);
     this.setState({
       showingItems: filteredByPage,
       currentGroup: id,
       currentPage: 1,
-      status: "all",
+      status: 'all',
     });
   };
 
   /* Filter status */
 
-  filterItems = (arr, status) => {
-    switch (status) {
-      case "planned":
-        return arr.filter((item) => !item.done);
-
-      case "done":
-        return arr.filter((item) => item.done);
-
-      default:
-        return arr;
-    }
-  };
-
-  switchStatus = (status) => {
+  switchStatus = status => {
     const { items, currentGroup } = this.state;
     const updatedItems = [...items];
-    const { filteredByPage } = this.commonFilter(
+    const { filteredByPage } = commonFilter(
       updatedItems,
       status,
       currentGroup,
@@ -244,16 +213,9 @@ export class App extends Component {
 
   /* Pages */
 
-  showItems = (arr, page, limit = 10) => {
-    const start = (page - 1) * limit;
-    const end = start + limit;
-    const currentPageItems = arr.slice(start, end);
-    return currentPageItems;
-  };
-
   switchToFirstPage = () => {
     const { items, status, currentGroup } = this.state;
-    const { filteredByPage } = this.commonFilter(
+    const { filteredByPage } = commonFilter(
       items,
       status,
       currentGroup,
@@ -267,7 +229,7 @@ export class App extends Component {
 
   switchToNextPage = () => {
     const { items, currentGroup, currentPage, status } = this.state;
-    const { filteredByStatus, filteredByPage } = this.commonFilter(
+    const { filteredByStatus, filteredByPage } = commonFilter(
       items,
       status,
       currentGroup,
@@ -286,7 +248,7 @@ export class App extends Component {
 
   switchToPrevPage = () => {
     const { items, currentGroup, currentPage, status } = this.state;
-    const { filteredByPage } = this.commonFilter(
+    const { filteredByPage } = commonFilter(
       items,
       status,
       currentGroup,
@@ -302,14 +264,14 @@ export class App extends Component {
 
   switchToLastPage = () => {
     const { items, currentGroup, status, currentPage } = this.state;
-    const { filteredByStatus } = this.commonFilter(
+    const { filteredByStatus } = commonFilter(
       items,
       status,
       currentGroup,
       currentPage
     );
     const totalPages = Math.ceil(filteredByStatus.length / 10);
-    const { filteredByPage } = this.commonFilter(
+    const { filteredByPage } = commonFilter(
       items,
       status,
       currentGroup,
@@ -324,9 +286,9 @@ export class App extends Component {
   };
 
   componentDidMount() {
-    let items = this.getItemsLocalStorage();
-    let groups = this.getGroupsLocalStorage();
-    let { filteredByPage } = this.commonFilter(items, "all", 1, 1);
+    let items = getItemsLocalStorage();
+    let groups = getGroupsLocalStorage();
+    let { filteredByPage } = commonFilter(items, 'all', 1, 1);
 
     this.setState({
       items: items,
@@ -334,17 +296,14 @@ export class App extends Component {
       showingItems: filteredByPage,
     });
 
-    this.counter = Math.max(...items.map((item) => item.id));
-    this.counter = this.counter === -Infinity ? 1 : this.counter + 1;
-
     this.counterGroup = Math.max(...groups.map((group) => group.id));
     this.counterGroup =
       this.counterGroup === -Infinity ? 1 : this.counterGroup + 1;
   }
 
   componentDidUpdate() {
-    localStorage.setItem("saved", JSON.stringify(this.state.items));
-    localStorage.setItem("savedGroups", JSON.stringify(this.state.groups));
+    localStorage.setItem('saved', JSON.stringify(this.state.items));
+    localStorage.setItem('savedGroups', JSON.stringify(this.state.groups));
   }
 
   render() {
@@ -355,11 +314,10 @@ export class App extends Component {
       status,
       currentPage,
 		} = this.state;
-		// console.log(JSON.stringify(this.state, null, ' '));
 		
     return (
-      <div className="container">
-        <div className="wrap">
+      <div className='container'>
+        <div className='wrap'>
           <GroupList
             groups={groups}
             currentGroup={currentGroup}
@@ -368,7 +326,7 @@ export class App extends Component {
             renameGroup={this.renameGroup}
             deleteGroup={this.deleteGroup}
           />
-          <div className="todo">
+          <div className='todo'>
             <TabNav
               switchStatus={this.switchStatus}
               options={TAB_NAV_OPTIONS}
@@ -376,7 +334,7 @@ export class App extends Component {
             />
             <TodoList
               items={showingItems}
-              onCheckItem={this.checkItem}
+              onCheckItem={this.check}
               onDeleteItem={this.deleteItem}
               onUpdateItemValue={this.updateItemValue}
             />
@@ -394,3 +352,17 @@ export class App extends Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    items: state.items
+  }
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    checkItem: id => dispatch(checkItem(id))
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

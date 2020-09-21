@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
 export class TodoItem extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      input: "",
+      input: '',
     };
   }
 
@@ -25,25 +25,25 @@ export class TodoItem extends Component {
   render() {
     return (
       <>
-        <label className="main__checkbox">
+        <label className='main__checkbox'>
           <input
-            type="checkbox"
+            type='checkbox'
             onChange={() => this.props.onCheckItem(this.props.id)}
             checked={this.props.done}
           />
-          <span className="checkmark"></span>
+          <span className='checkmark'></span>
         </label>
 
         <input
-          className="main__input"
-          type="text"
+          className='main__input'
+          type='text'
           defaultValue={this.props.value}
           onBlur={this.onInputBlur}
           ref={(input) => (this.focusInput = input)}
         />
 
         <span
-          className="delete"
+          className='delete'
           onClick={() => this.props.onDeleteItem(this.props.id)}
         ></span>
       </>

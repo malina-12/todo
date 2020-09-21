@@ -1,4 +1,4 @@
-import { v4 as generateId } from 'uuid'
+import { v4 as generateId } from 'uuid';
 
 export const addItem = () => ({
     type: 'ADD_ITEM',
@@ -56,7 +56,6 @@ export const switchStatus = status => ({
     type: 'SWITCH_STATUS',
     status,
 });
-
 
 export const statuses = {
     ALL: 'ALL',
