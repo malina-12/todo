@@ -11,7 +11,7 @@ import { TAB_NAV_OPTIONS } from './TabNav/TabNavOptions.js';
 import { commonFilter } from '../utils'
 import { getItemsLocalStorage, getGroupsLocalStorage } from '../utils';
 
-import { checkItem } from '../ActionCreators';
+import { checkItem, deleteItem } from '../ActionCreators';
 
 import { v4 as generateId } from 'uuid';
 
@@ -29,6 +29,11 @@ class App extends Component {
       currentPage: 1,
     };
   }
+
+  getGroupsLocalStorage = () => localStorage.getItem('savedGroups') !== null
+  ? JSON.parse(localStorage.getItem('savedGroups'))
+  : [{ id: this.counterGroup, name: `Group ${this.counterGroup}` }];
+
 
   /* Todo items */
 
@@ -83,7 +88,18 @@ class App extends Component {
 
   check = id => {
     this.props.checkItem(id)
-    console.log(this.props);
+    const { status, currentGroup, currentPage } = this.state;
+
+    const { filteredByPage } = commonFilter(
+      this.props.items,
+      status,
+      currentGroup,
+      currentPage
+    );
+    this.setState({
+      showingItems: filteredByPage,
+    });
+    console.log(filteredByPage);
   }
 /*   checkItem = id => {
     const { items, status, currentGroup, currentPage } = this.state;
@@ -103,18 +119,19 @@ class App extends Component {
   }; */
 
   deleteItem = id => {
-    const { items, status, currentGroup, currentPage } = this.state;
-    const foundItems = items.filter((item) => item.id !== id);
+    const {deleteItem, items} = this.props;
+    deleteItem(id)
+    const { status, currentGroup, currentPage } = this.state;
     const { filteredByPage } = commonFilter(
-      foundItems,
+      items,
       status,
       currentGroup,
       currentPage
     );
     this.setState({
-      items: foundItems,
       showingItems: filteredByPage,
     });
+    console.log('items', items)
   };
 
   /* Groups */
@@ -287,7 +304,7 @@ class App extends Component {
 
   componentDidMount() {
     let items = getItemsLocalStorage();
-    let groups = getGroupsLocalStorage();
+    let groups = this.getGroupsLocalStorage();
     let { filteredByPage } = commonFilter(items, 'all', 1, 1);
 
     this.setState({
@@ -353,15 +370,18 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = () => {
   return {
-    items: state.items
+    items: getItemsLocalStorage(),
+    groups: getGroupsLocalStorage(),
   }
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    checkItem: id => dispatch(checkItem(id))
+    checkItem: id => dispatch(checkItem(id)),
+    deleteItem: id => dispatch(deleteItem(id))
+
   }
 };
 
