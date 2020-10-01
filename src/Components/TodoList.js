@@ -10,8 +10,8 @@ const TodoList = ({ items, onCheckItem, onDeleteItem, onUpdateItemValue }) => {
             <li key={item.id} className="main__item">
               <TodoItem
                 {...item}
-                onCheckItem={onCheckItem}
-                onDeleteItem={onDeleteItem}
+                onCheckItem={() => onCheckItem(item.id)}
+                onDeleteItem={() => onDeleteItem(item.id)}
                 onUpdateItemValue={onUpdateItemValue}
               />
             </li>

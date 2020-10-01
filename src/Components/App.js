@@ -86,21 +86,6 @@ class App extends Component {
     }
   };
 
-  check = id => {
-    this.props.checkItem(id)
-    const { status, currentGroup, currentPage } = this.state;
-
-    const { filteredByPage } = commonFilter(
-      this.props.items,
-      status,
-      currentGroup,
-      currentPage
-    );
-    this.setState({
-      showingItems: filteredByPage,
-    });
-    console.log(filteredByPage);
-  }
 /*   checkItem = id => {
     const { items, status, currentGroup, currentPage } = this.state;
     const updatedItems = [...items];
@@ -117,22 +102,6 @@ class App extends Component {
       showingItems: filteredByPage,
     });
   }; */
-
-  deleteItem = id => {
-    const {deleteItem, items} = this.props;
-    deleteItem(id)
-    const { status, currentGroup, currentPage } = this.state;
-    const { filteredByPage } = commonFilter(
-      items,
-      status,
-      currentGroup,
-      currentPage
-    );
-    this.setState({
-      showingItems: filteredByPage,
-    });
-    console.log('items', items)
-  };
 
   /* Groups */
 
@@ -350,9 +319,9 @@ class App extends Component {
               activeTab={status}
             />
             <TodoList
-              items={showingItems}
-              onCheckItem={this.check}
-              onDeleteItem={this.deleteItem}
+              items={this.props.items}
+              onCheckItem={this.props.checkItem}
+              onDeleteItem={this.props.deleteItem}
               onUpdateItemValue={this.updateItemValue}
             />
             <Pagination
@@ -373,7 +342,6 @@ class App extends Component {
 const mapStateToProps = () => {
   return {
     items: getItemsLocalStorage(),
-    groups: getGroupsLocalStorage(),
   }
 };
 

@@ -28,7 +28,7 @@ export class TodoItem extends Component {
         <label className='main__checkbox'>
           <input
             type='checkbox'
-            onChange={() => this.props.onCheckItem(this.props.id)}
+            onChange={this.props.onCheckItem}
             checked={this.props.done}
           />
           <span className='checkmark'></span>
@@ -39,12 +39,12 @@ export class TodoItem extends Component {
           type='text'
           defaultValue={this.props.value}
           onBlur={this.onInputBlur}
-          ref={(input) => (this.focusInput = input)}
+          ref={input => (this.focusInput = input)}
         />
 
         <span
           className='delete'
-          onClick={() => this.props.onDeleteItem(this.props.id)}
+          onClick={this.props.onDeleteItem}
         ></span>
       </>
     );

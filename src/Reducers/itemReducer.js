@@ -21,13 +21,13 @@ const itemReducer = (state = items, action) => {
           : item
       )
     case 'CHECK_ITEM':
-      return state.map(item =>
+      return [...state.map(item =>
         item.id === action.id
           ? {...item, done: !item.done}
           : item
-      )
+      )]
     case 'DELETE_ITEM':
-      return state.filter(item => item.id !== action.id)
+      return [...state.filter(item => item.id !== action.id)]
     
     default:
       return state

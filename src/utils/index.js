@@ -1,10 +1,13 @@
+import { v4 as generateId } from 'uuid';
+
+
 export const getItemsLocalStorage = () => localStorage.getItem('saved') !== null
   ? JSON.parse(localStorage.getItem('saved'))
   : [];
 
 export const getGroupsLocalStorage = () => localStorage.getItem('savedGroups') !== null
   ? JSON.parse(localStorage.getItem('savedGroups'))
-  : [{ id: this.counterGroup, name: `Group ${this.counterGroup}` }];
+  : [{ id: generateId(), name: 'New Group' }];
 
   export const commonFilter = (arr, status, groupId, page) => {
     const filteredByGroup = filterGroup(arr, groupId);
