@@ -11,9 +11,7 @@ import { TAB_NAV_OPTIONS } from './TabNav/TabNavOptions.js';
 import { commonFilter } from '../utils'
 import { getItemsLocalStorage, getGroupsLocalStorage } from '../utils';
 
-import { checkItem, deleteItem } from '../ActionCreators';
-
-import { v4 as generateId } from 'uuid';
+import { addItem, checkItem, deleteItem, updateItemValue } from '../ActionCreators';
 
 class App extends Component {
   counterGroup = 1;
@@ -21,7 +19,6 @@ class App extends Component {
     super();
 
     this.state = {
-      items: [],
       groups: [],
       showingItems: [],
       currentGroup: 1,
@@ -34,74 +31,6 @@ class App extends Component {
   ? JSON.parse(localStorage.getItem('savedGroups'))
   : [{ id: this.counterGroup, name: `Group ${this.counterGroup}` }];
 
-
-  /* Todo items */
-
-  addItem = () => {
-    const { items, currentGroup } = this.state;
-    const newItem = {
-      done: false,
-      value: '',
-      group: this.state.currentGroup,
-      id: generateId(),
-    };
-    const updatedItems = [newItem, ...items];
-    const { filteredByPage } = commonFilter(
-      updatedItems,
-      'all',
-      currentGroup,
-      1
-    );
-    this.setState({
-      items: updatedItems,
-      showingItems: filteredByPage,
-      status: 'all',
-      currentGroup: currentGroup,
-      currentPage: 1,
-    });
-  };
-
-  updateItemValue = (value, id) => {
-    const { items, status, currentGroup, currentPage } = this.state;
-    const updatedItems = [...items];
-    const updatedItem = items.find((item) => item.id === id);
-    const { filteredByPage } = commonFilter(
-      updatedItems,
-      status,
-      currentGroup,
-      currentPage
-    );
-    if (value) {
-      updatedItem.value = value.trim();
-      this.setState({
-        items: updatedItems,
-        showingItems: filteredByPage,
-      });
-    } else {
-      const updatedItems = items.filter((item) => item.id !== id);
-      this.setState({
-        items: updatedItems,
-        showingItems: filteredByPage,
-      });
-    }
-  };
-
-/*   checkItem = id => {
-    const { items, status, currentGroup, currentPage } = this.state;
-    const updatedItems = [...items];
-    const checkedItem = updatedItems.find((item) => item.id === id);
-    checkedItem.done = !checkedItem.done;
-    const { filteredByPage } = commonFilter(
-      updatedItems,
-      status,
-      currentGroup,
-      currentPage
-    );
-    this.setState({
-      items: updatedItems,
-      showingItems: filteredByPage,
-    });
-  }; */
 
   /* Groups */
 
@@ -322,7 +251,8 @@ class App extends Component {
               items={this.props.items}
               onCheckItem={this.props.checkItem}
               onDeleteItem={this.props.deleteItem}
-              onUpdateItemValue={this.updateItemValue}
+              onUpdateItemValue={this.props.updateItemValue}
+              onAddItem={this.props.addItem}
             />
             <Pagination
               currentPage={currentPage}
@@ -331,7 +261,7 @@ class App extends Component {
               switchToPrevPage={this.switchToPrevPage}
               switchToLastPage={this.switchToLastPage}
             />
-          <AddButton onAddItem={this.addItem} />
+          <AddButton onAddItem={this.props.addItem} />
           </div>
         </div>
       </div>
@@ -339,17 +269,18 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = () => {
+const mapStateToProps = store => {
   return {
-    items: getItemsLocalStorage(),
+    items: store
   }
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    addItem: () => dispatch(addItem()),
     checkItem: id => dispatch(checkItem(id)),
-    deleteItem: id => dispatch(deleteItem(id))
-
+    deleteItem: id => dispatch(deleteItem(id)),
+    updateItemValue: (value, id) => dispatch(updateItemValue(value, id)),
   }
 };
 

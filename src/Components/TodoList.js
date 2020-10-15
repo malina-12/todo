@@ -1,7 +1,7 @@
 import React from "react";
 import { TodoItem } from "./Item/TodoItem";
 
-const TodoList = ({ items, onCheckItem, onDeleteItem, onUpdateItemValue }) => {
+const TodoList = ({ items, onCheckItem, onDeleteItem, onUpdateItemValue, onAddItem }) => {
   return (
     <div className="main">
       <ul className="main__list">
@@ -13,6 +13,7 @@ const TodoList = ({ items, onCheckItem, onDeleteItem, onUpdateItemValue }) => {
                 onCheckItem={() => onCheckItem(item.id)}
                 onDeleteItem={() => onDeleteItem(item.id)}
                 onUpdateItemValue={onUpdateItemValue}
+                onAddItem={onAddItem}
               />
             </li>
           );

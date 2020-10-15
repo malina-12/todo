@@ -9,7 +9,7 @@ const itemReducer = (state = items, action) => {
         {
           done: false,
           value: '',
-          // group: this.state.currentGroup,
+          group: 1,
           id: action.id,
         },
         ...state,

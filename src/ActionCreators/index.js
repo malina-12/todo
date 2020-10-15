@@ -4,13 +4,13 @@ export const addItem = () => ({
     type: 'ADD_ITEM',
     done: false,
     value: '',
-    // group: this.state.currentGroup,
+    group: 1,
     id: generateId(),
 });
 
 export const updateItemValue = (value, id) => ({
     type: 'UPDATE_ITEM_VALUE',
-    value: value,
+    value: value.trim(),
     id,
 });
 

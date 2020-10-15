@@ -16,11 +16,18 @@ export class TodoItem extends Component {
     });
   };
 
+  addNewItem = ({ key }) => {
+    if (key === 'Enter') {
+      this.props.onAddItem()
+    }
+  return;
+  };
+
   componentDidMount() {
     if (!this.props.value) {
       this.focusInput.focus();
     }
-  }
+  };
 
   render() {
     return (
@@ -39,6 +46,7 @@ export class TodoItem extends Component {
           type='text'
           defaultValue={this.props.value}
           onBlur={this.onInputBlur}
+          onKeyPress={this.addNewItem}
           ref={input => (this.focusInput = input)}
         />
 
